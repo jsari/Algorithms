@@ -1,51 +1,56 @@
 
-def construct_lps(s):
+# Knuth Morris Pratt Algorithm
+# -----------------------------
+# The KMP algorithm searches for all occurrences of a string P within a string S
+#
+# Definitions:
+# -----------------------------
+# Border of a string is a prefix of the string
+# which is equal to the suffix of the string of the same length.
+#
+# Prefix function of a string P is a function s(i) that
+# for each i returns the length of the longest border of the prefix P[:i]
+#
+#
+# Time Complexity of Knuth Morris Pratt algorithm
+# -----------------------------
+# Algorithm : O(|p| + |s|)
+# Function compute_prefix_function : O(|p|)
+# Function kmp : O(|s|)
+#
 
-    length = len(s)
+
+def compute_prefix_function(p):
+
+    length = len(p)
     lps = [0]*length
 
-    i, j = 1, 0
+    border = 0
+    for i in range(1, length):
 
-    while i <= length - 1:
+        while border > 0 and p[i] != p[border]:
+            border = lps[border - 1]
 
-        if s[i] == s[j]:
-            j += 1
-            lps[i] = j
-            i += 1
+        if p[i] == p[border]:
+            border += 1
         else:
-            if j != 0:
-                j = lps[j-1]
-            else:
-                lps[i] = 0
-                i += 1
+            border = 0
+
+        lps[i] = border
 
     return lps
 
 
-def kmp(s, p):
+def kmp(t, p):
 
-    ans = []
-    aux = construct_lps(p)
+    prefix_function = compute_prefix_function(p + "$" + t)
 
-    i = 0  # index for string s
-    j = 0  # index for pattern p
-    while i < len(s):
+    result = []
+    for index, value in enumerate(prefix_function[len(p):]):
+        if value == len(p):
+            result.append(index - len(p))
 
-        if s[i] == p[j]:
-            i += 1
-            j += 1
-
-            if j == len(p):
-                ans.append(i - j)
-                j = aux[j - 1]
-        else:
-
-            if j != 0:
-                j = aux[j-1]
-            else:
-                i += 1
-
-    return ans
+    return result
 
 
 if __name__ == "__main__":
