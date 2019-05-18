@@ -16,7 +16,6 @@
 # -----------------------------
 # Algorithm : O(|p| + |s|)
 # Function compute_prefix_function : O(|p|)
-# Function kmp : O(|s|)
 #
 
 
